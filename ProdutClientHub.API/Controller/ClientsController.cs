@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProductsClientHub.Communication.Requests;
 using ProductsClientHub.Communication.Responses;
+using ProdutClientHub.API.UseCases.Clients.Register;
 
 namespace ProdutClientHub.API.Controller
 {
@@ -11,14 +12,27 @@ namespace ProdutClientHub.API.Controller
     {
         [HttpPost]
         [ProducesResponseType(typeof(ResponseClientJson), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResponseErrorMessagesJson), StatusCodes.Status400BadRequest)]
+        
         public IActionResult Register([FromBody]RequestClientJson request)
         {
-            var useCase = new ResponseClientJson();
+            try
+            {
+                var useCase = new RegisterClientUseCase();
 
+                var response = useCase.Execute(request);
 
-             var response = useCase.Execute(request);
-
-            return Created();
+                return Created(string.Empty, response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new ResponseErrorMessagesJson(ex.Message));
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorMessagesJson("Erro desconhecido"));
+            }
+          
         }
         [HttpPut]
         public IActionResult Update()
