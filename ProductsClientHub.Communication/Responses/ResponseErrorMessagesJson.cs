@@ -8,4 +8,9 @@ public class ResponseErrorMessagesJson
     {
         Errors = [message];
     }
+    
+    public ResponseErrorMessagesJson(List<String> messages)
+    {
+        Errors = messages;
+    }
 }

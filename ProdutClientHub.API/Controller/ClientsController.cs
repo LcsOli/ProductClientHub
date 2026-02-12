@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductClientHub.Exceptions.ExceptionsBase;
 using ProductsClientHub.Communication.Requests;
 using ProductsClientHub.Communication.Responses;
 using ProdutClientHub.API.UseCases.Clients.Register;
@@ -24,9 +25,11 @@ namespace ProdutClientHub.API.Controller
 
                 return Created(string.Empty, response);
             }
-            catch (ArgumentException ex)
+            catch (ProductClientHubException ex)
             {
-                return BadRequest(new ResponseErrorMessagesJson(ex.Message));
+                var errors = ex.GetErrors();
+                
+                return BadRequest(new ResponseErrorMessagesJson(errors));
             }
             catch
             {
