@@ -9,10 +9,11 @@ namespace ProdutClientHub.API.Filters;
     {
         public void OnException(ExceptionContext context) 
         { 
-            if(context.Exception is ProductClientHubException)
+            if(context.Exception is ProductClientHubException productClientHubException)
             {
-            context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Result = new ObjectResult(new ResponseErrorMessagesJson("Erro desconhecido"));
+            context.HttpContext.Response.StatusCode = (int)productClientHubException.GetHttpStatusCode();
+
+            context.Result = new ObjectResult(new ResponseErrorMessagesJson(productClientHubException.GetErrors()));
         }
             else
             {
